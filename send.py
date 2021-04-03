@@ -15,12 +15,11 @@ def send(filename):
     server.starttls()
     server.login('ptn8403@gmail.com', 'BA_Python_2021')
 
-    from_address = 'ptn8403@gmail.com'
-    to_address = 'kofaleyna@gmail.com'
+    from_address = '***'
+    to_address = '***'
 
-    # to_list = ['borayuret@bilgeadam.com',
-    #            # "utku.gokcen13@gmail.com",
-    #            "kofaleyna@gmail.com"]
+    # to_list = ['***',
+    #            "***"]
 
     subject = "YFscrapper'dan mail geldi! " + datetime.datetime.now().strftime('%H:%M:%S')
 
@@ -49,7 +48,7 @@ def send(filename):
     message = msg.as_string()
 
     # for to_single in to_list:
-    server.sendmail('ptn8403@gmail.com', to_address, message)
+    server.sendmail('***', to_address, message)
 
     # msg = MIMEText(message, "plain", "UTF-8")
     # server.sendmail(from_address, to_address, msg.as_string())
