@@ -2,23 +2,36 @@ import requests
 from bs4 import BeautifulSoup
 import time
 import random
+import csv
+import datetime
+import send
 
 # User-agent tanımlıyorum, scraping yaparken beni browser sansın
-user_agent_list = ['Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.192 Safari/537.36',
-                   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36',
-                   'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0',
-                   'Mozilla/5.0 (iPhone; CPU iPhone OS 14_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/87.0.4280.77 Mobile/15E148 Safari/604.1']
+user_agent_list = [
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.192 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0',
+    'Mozilla/5.0 (iPhone; CPU iPhone OS 14_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/87.0.4280.77 Mobile/15E148 Safari/604.1']
 
-# agent_header = {
-#    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36'}
+# agent_header = { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)
+# Chrome/89.0.4389.82 Safari/537.36'}
 
 sembol_liste = ["AMZN", "GOOG", "FB", "NFLX", "MSFT"]
+today = str(datetime.date.today()) + ".csv"
+csv_file = open(today, "w", newline='')
+csv_writer = csv.writer(csv_file)
+csv_writer.writerow(['Stock Name', 'Current Name', 'Previous Close',
+                     'Open', 'Bid', 'Ask', "Day's Range",
+                     '52 Week Range', 'Volume', 'Avg. Volume'])
 
 # sembol = input("Hisse sembolünü giriniz")
 # hisse_url = "https://finance.yahoo.com/quote/NFLX?p=NFLX&.tsrc=fin-srch"
 # print(hisse_url)
 
 for sembol in sembol_liste:
+
+    stock = []
+
     user_agent = random.choice(user_agent_list)
     agent_header = {'User-Agent': user_agent}
     hisse_url = "https://finance.yahoo.com/quote/" + sembol + "?p=" + sembol + "&.tsrc=fin-srch"
@@ -46,6 +59,9 @@ for sembol in sembol_liste:
     print(hisse_fiyat)
     print(hisse_title + " - " + hisse_fiyat)
 
+    stock.append(str(hisse_title))
+    stock.append(float(hisse_fiyat.replace(',', '')))
+
     table_info = soup.find('div', class_="D(ib) W(1/2) Bxz(bb) Pend(12px) Va(t) ie-7_D(i) smartphone_D(b) "
                                          "smartphone_W(100%) smartphone_Pend(0px) smartphone_BdY "
                                          "smartphone_Bdc($seperatorColor)")
@@ -60,9 +76,12 @@ for sembol in sembol_liste:
 
         print(satir_baslik)
         print(satir_deger)
-
+        stock.append(satir_deger.replace(',', ''))
+    csv_writer.writerow(stock)
     print("----------------------")
     # sitenin engellememesi için 5 sn uyut
     time.sleep(5)
-
+csv_file.close()
+# mail göndermek için önce dosyayı kapatmak gerekli
+send.send("Homework_2.pdf")
 print("end-of-list")
