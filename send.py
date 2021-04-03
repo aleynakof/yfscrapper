@@ -13,7 +13,7 @@ def send(filename):
     # 587=port
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.starttls()
-    server.login('ptn8403@gmail.com', 'BA_Python_2021')
+    server.login('***', 'BA_Python_2021')
 
     from_address = '***'
     to_address = '***'
